@@ -92,3 +92,9 @@ docker-compose.override.yml
 *.swo
 .DS_Store
 Thumbs.db
+
+# =========================
+# Planning files (local only)
+# =========================
+AI_Tutor_Hackathon_Plan.md
+prompt.txt
