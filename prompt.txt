@@ -1,0 +1,71 @@
+# Task: Write a 3-hour hackathon implementation plan for an "AI Tutor" web platform as a Markdown file
+
+## Context
+We're building a web app at a **Responsible AI hackathon** and have **3 hours** in total. The guiding question is:
+
+> "How can we design AI systems that amplify human intelligence without replacing human thinking, and make sure we preserve essential human skills?"
+
+The result should be a working, demo-ready **web platform** where an LLM-based AI Tutor discusses lecture content with students. The tutor answers only from material the professor provides. Every student interaction is logged, and student questions are clustered so the professor can see which topics are hard.
+
+### Actors and flows
+- **Professor → AI Tutor:** uploads course documents (PDFs) and sets a **tutor prompt** (behaviour, scope, tone).
+- **Student → AI Tutor:** **asks** questions in a chat.
+- **AI Tutor → Student:** **explains**, grounded in the professor's documents, with source citations.
+- **AI Tutor → Professor:** **clusters student questions** and shows **insights** on a dashboard (difficult topics, content gaps).
+
+## Must-have features (MVP for the demo)
+1. **Two views in one web app**, switched by a simple role toggle (no real authentication):
+   - **Professor view:** create a course, upload PDFs, edit the tutor prompt, open the insights dashboard
+   - **Student view:** chat with the tutor for a selected course
+2. **Grounded answers (RAG):** chunk and embed the PDFs, retrieve the top-k chunks, and answer only from that context. Show citations (document name + page) under every answer. If the material doesn't cover the question, say so clearly instead of guessing.
+3. **Socratic / "think first" mode** (this is the Responsible AI core): by default the tutor gives hints and asks guiding questions instead of full solutions. The student can ask for more detail step by step. The professor can switch this mode on or off.
+4. **Interaction logging:** store question, answer, retrieved sources, timestamp, course, and a pseudonymous session ID.
+5. **Question clustering and insights dashboard:** embed the logged questions, cluster them (e.g. k-means or HDBSCAN), and use the LLM to give each cluster a short label. The dashboard shows:
+   - clusters with label, size and example questions
+   - a simple chart of cluster sizes
+   - unanswered or out-of-scope questions (content gaps)
+6. **Responsible AI features visible in the UI:**
+   - a transparency notice ("AI-generated, based on course material, may contain errors")
+   - source citations on every answer
+   - aggregate-only insights for professors (no per-student tracking), plus a note on pseudonymisation
+   - a thumbs up/down feedback button on answers
+
+## Nice-to-have (only if time remains)
+- Streaming responses
+- Confidence or groundedness indicator per answer
+- Export of insights as CSV
+- Seeded demo data (an example course plus about 30 sample questions) so the dashboard looks good in the demo
+
+## Constraints
+- **3 hours total** for a small team, so choose the fastest reliable stack and avoid heavy infrastructure.
+- Recommend **one** concrete stack and justify it briefly. Default suggestion: **Python FastAPI** backend (good for embeddings and clustering with scikit-learn) + **React (Vite) + Tailwind** frontend + **SQLite** + **ChromaDB** (or in-memory numpy) for vectors + an LLM API (e.g. OpenAI or Anthropic). Propose something simpler if it's clearly faster (e.g. a single Next.js app).
+- Runs locally with one command if possible (e.g. `docker compose up`, or two terminals).
+- Secrets via a `.env` file.
+
+## What the Markdown file should contain
+Create `AI_Tutor_Hackathon_Plan.md` with these sections:
+
+1. **Pitch** (2–3 sentences) and how the project answers the guiding question
+2. **Scope**: MVP vs. nice-to-have vs. explicitly out of scope
+3. **Architecture**: a Mermaid diagram plus a short description of each component
+4. **Tech stack**, with justification
+5. **Data model**: tables or collections with their fields (Course, Document, Chunk, Interaction, Cluster)
+6. **API endpoints**: method, path, request and response sketch
+7. **Key implementation details**, with code snippets for:
+   - PDF ingestion and chunking (with page metadata)
+   - the retrieval + answer prompt template (system prompt + professor prompt + context + citation rules + "not in material" handling)
+   - the Socratic-mode prompt template
+   - the clustering + LLM labelling function
+8. **UI screens**: student chat, professor upload/settings, insights dashboard (a short wireframe description for each)
+9. **Responsible AI section**: grounding, transparency, privacy/GDPR (pseudonymisation, aggregate-only data, data minimisation), preserving student thinking, and known limitations
+10. **3-hour timeline**: a minute-by-minute plan (e.g. 0:00–0:20 setup, …, 2:30–3:00 demo prep), with a task split for 3–4 people
+11. **Demo script**: a 3-minute walkthrough showing every feature and the Responsible AI angle
+12. **Project structure**: folder tree
+13. **Setup and run instructions**
+14. **Risks and fallbacks** (e.g. if clustering fails, group questions with LLM-based topic tagging instead)
+
+## Output requirements
+- One complete Markdown file that is concrete, copy-paste-ready and realistic for 3 hours
+- Name specific libraries and models; keep the code snippets short but working
+- Prioritise ruthlessly: a smaller working demo beats an unfinished big one
+- Write in English
